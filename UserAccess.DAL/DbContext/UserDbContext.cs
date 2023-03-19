@@ -6,10 +6,8 @@ namespace UserAccess.DAL.DbContext;
 
 public class UserDbContext : IdentityDbContext<User>
 {
-    public UserDbContext(DbContextOptions options)
+    public UserDbContext(DbContextOptions<UserDbContext> options)
         : base(options)
     {
-        
     }
-    
 }
