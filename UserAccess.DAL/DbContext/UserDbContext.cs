@@ -12,5 +12,4 @@ public class UserDbContext : IdentityDbContext<User>
         
     }
     
-    
 }
