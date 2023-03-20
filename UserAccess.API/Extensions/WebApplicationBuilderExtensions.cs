@@ -1,5 +1,10 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using UserAccess.BLL.Interfaces;
+using UserAccess.BLL.Services;
 using UserAccess.DAL.DbContext;
 using UserAccess.DAL.Entities;
 
@@ -7,7 +12,8 @@ namespace UserAccess.API.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {
-    public static WebApplicationBuilder AddUserAccessManagement(this WebApplicationBuilder builder, IConfiguration configuration)
+    public static WebApplicationBuilder AddUserAccessManagement(this WebApplicationBuilder builder,
+        IConfiguration configuration)
     {
         builder.Services.AddDbContext<UserDbContext>(options =>
         {
@@ -18,11 +24,23 @@ public static class WebApplicationBuilderExtensions
             .AddEntityFrameworkStores<UserDbContext>()
             .AddSignInManager<SignInManager<User>>();
 
-        builder.Services.AddAuthentication();
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:Key"])),
+                    ValidIssuer = configuration["Token:Issuer"],
+                    ValidateIssuer = true,
+                };
+            });
         builder.Services.AddAuthorization();
 
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(WebApplicationBuilderExtensions).Assembly);
+
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
         return builder;
     }
