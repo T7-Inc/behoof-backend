@@ -11,11 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <ProjectReference Include="..\UserAccess.API\UserAccess.API.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\UserAccess.API\UserAccess.API.csproj" />
+      <Folder Include="Controllers" />
     </ItemGroup>
 
 </Project>

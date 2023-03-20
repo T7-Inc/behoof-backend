@@ -1,5 +1,6 @@
 
 
+using Behoof.API.Middleware;
 using UserAccess.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+    
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
