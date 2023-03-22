@@ -12,11 +12,13 @@ public class UserController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly ITokenService _tokenService;
+    private readonly IEmailService _emailService;
 
-    public UserController(UserManager<User> userManager, ITokenService tokenService)
+    public UserController(UserManager<User> userManager, ITokenService tokenService, IEmailService emailService)
     {
         _userManager = userManager;
         _tokenService = tokenService;
+        _emailService = emailService;
     }
     
     [HttpPost("Register")]
@@ -43,7 +45,14 @@ public class UserController : ControllerBase
             return BadRequest(result.Errors);
         }
         
-        //TODO: Send Email verification
+        var user = await _userManager.FindByNameAsync(model.UserName);
+
+        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { emailToken, email = user.Email }, Request.Scheme);
+
+        await _emailService.SendEmailAsync(model.Email,
+            "Behoof Email Confirmation",
+            $"Click the link below to confirm email: \n{confirmationLink}");
         
         return Ok("Registration successful, please check your email for verification instructions");
     }
@@ -66,5 +75,25 @@ public class UserController : ControllerBase
 
         return Unauthorized();
     }
+
+    [HttpGet("EmailConfirmation")]
+    public async Task<IActionResult> ConfirmEmail(string token, string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user == null)
+        {
+            return BadRequest("User does not exist");
+        }
+
+        var result = await _userManager.ConfirmEmailAsync(user, token);
+        if (!result.Succeeded)
+        {
+            return BadRequest("Unable to confirm email");
+        }
+
+        return Ok("Email confirmed");
+    }
+
 
 }
