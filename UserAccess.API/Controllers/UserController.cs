@@ -47,8 +47,8 @@ public class UserController : ControllerBase
         
         var user = await _userManager.FindByNameAsync(model.UserName);
 
-        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { emailToken, email = user.Email }, Request.Scheme);
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = user.Email }, Request.Scheme);
 
         await _emailService.SendEmailAsync(model.Email,
             "Behoof Email Confirmation",
