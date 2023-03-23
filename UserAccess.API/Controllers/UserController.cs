@@ -22,7 +22,7 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("Register")]
-    public async Task<ActionResult<User>> PostUser([FromBody] UserRegisterModel model)
+    public async Task<ActionResult<User>> Register([FromBody] UserRegisterModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -58,7 +58,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<User>> Authentication([FromBody] UserLoginModel model)
+    public async Task<ActionResult<User>> Login([FromBody] UserLoginModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -76,7 +76,7 @@ public class UserController : ControllerBase
         return Unauthorized();
     }
 
-    [HttpGet("EmailConfirmation")]
+    [HttpGet("ConfirmEmail")]
     public async Task<IActionResult> ConfirmEmail(string token, string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
