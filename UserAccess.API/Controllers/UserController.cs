@@ -59,7 +59,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<User>> Login([FromBody] UserLoginModel model)
+    public async Task<ActionResult<UserResponse>> Login([FromBody] UserLoginModel model)
     {
         if (!ModelState.IsValid)
         {
