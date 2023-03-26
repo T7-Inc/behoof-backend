@@ -59,16 +59,23 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<UserResponse>> Login([FromBody] UserLoginModel model)
+    public async Task<ActionResult<UserResponse>> Login([FromBody] UserLoginModel userLoginModel)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var user = await _userManager.FindByNameAsync(model.UserName);
+        var user = await _userManager.FindByNameAsync(userLoginModel.UserName);
 
         if (user == null)
+        {
+            return Unauthorized();
+        }
+        
+        var result = await _userManager.CheckPasswordAsync(user, userLoginModel.Password);
+
+        if (!result)
         {
             return Unauthorized();
         }
