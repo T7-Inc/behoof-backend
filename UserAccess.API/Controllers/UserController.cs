@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<ActionResult<UserResponse>> PostUser([FromBody] UserRegisterModel model)
+    public async Task<ActionResult<UserResponse>> Register([FromBody] UserRegisterModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -48,9 +48,8 @@ public class UserController : ControllerBase
 
         var user = await _userManager.FindByNameAsync(model.UserName);
 
-        var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { emailToken, email = user.Email },
-            Request.Scheme);
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { token, email = user.Email }, Request.Scheme);
 
         await _emailService.SendEmailAsync(model.Email,
             "Behoof Email Confirmation",
@@ -60,7 +59,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<UserResponse>> Authentication([FromBody] UserLoginModel model)
+    public async Task<ActionResult<User>> Login([FromBody] UserLoginModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -84,8 +83,7 @@ public class UserController : ControllerBase
         };
     }
 
-
-    [HttpGet("EmailConfirmation")]
+    [HttpGet("ConfirmEmail")]
     public async Task<IActionResult> ConfirmEmail(string token, string email)
     {
         var user = await _userManager.FindByEmailAsync(email);

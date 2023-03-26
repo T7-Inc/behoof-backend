@@ -42,10 +42,10 @@ public static class WebApplicationBuilderExtensions
             .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
         
         builder.Services.AddSendGrid(options =>
-            options.ApiKey = builder.Configuration.GetValue<string>("SendGridApi:Key")
+            options.ApiKey = Environment.GetEnvironmentVariable("SendGridApiKey")
                              ?? throw new Exception("The 'SendGridApiKey' is not configured")
         );
-        Console.WriteLine(builder.Configuration.GetValue<string>("SendGridApi:Key"));
+        
         builder.Services.AddTransient<IEmailService, EmailService>();
         builder.Services.AddAuthorization();
 
