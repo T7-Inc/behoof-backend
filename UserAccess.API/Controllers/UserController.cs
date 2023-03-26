@@ -86,7 +86,7 @@ public class UserController : ControllerBase
             UserName = user.UserName,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Token = _tokenService.CreateToken(user),
+            Token = _tokenService.CreateToken(user)
         };
     }
 

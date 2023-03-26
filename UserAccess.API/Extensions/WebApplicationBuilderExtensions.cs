@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SendGrid.Extensions.DependencyInjection;
 using UserAccess.BLL.Interfaces;
 using UserAccess.BLL.Services;
 using UserAccess.DAL.DbContext;
@@ -40,12 +39,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<UserDbContext>()
             .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
-        
-        builder.Services.AddSendGrid(options =>
-            options.ApiKey = Environment.GetEnvironmentVariable("SendGridApiKey")
-                             ?? throw new Exception("The 'SendGridApiKey' is not configured")
-        );
-        
+
         builder.Services.AddTransient<IEmailService, EmailService>();
         builder.Services.AddAuthorization();
 
