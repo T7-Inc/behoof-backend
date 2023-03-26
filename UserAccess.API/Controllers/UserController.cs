@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UserAccess.BLL.Interfaces;
 using UserAccess.BLL.Models;
+using UserAccess.BLL.Models.Responses;
 using UserAccess.DAL.Entities;
 
 namespace UserAccess.API.Controllers;
@@ -20,9 +21,9 @@ public class UserController : ControllerBase
         _tokenService = tokenService;
         _emailService = emailService;
     }
-    
+
     [HttpPost("Register")]
-    public async Task<ActionResult<User>> PostUser([FromBody] UserRegisterModel model)
+    public async Task<ActionResult<UserResponse>> PostUser([FromBody] UserRegisterModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -39,26 +40,27 @@ public class UserController : ControllerBase
                 Currency = model.Currency,
                 Country = model.Country
             }, model.Password);
-        
+
         if (!result.Succeeded)
         {
             return BadRequest(result.Errors);
         }
-        
+
         var user = await _userManager.FindByNameAsync(model.UserName);
 
         var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { emailToken, email = user.Email }, Request.Scheme);
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "User", new { emailToken, email = user.Email },
+            Request.Scheme);
 
         await _emailService.SendEmailAsync(model.Email,
             "Behoof Email Confirmation",
             $"Click the link below to confirm email: \n{confirmationLink}");
-        
+
         return Ok("Registration successful, please check your email for verification instructions");
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<User>> Authentication([FromBody] UserLoginModel model)
+    public async Task<ActionResult<UserResponse>> Authentication([FromBody] UserLoginModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -67,14 +69,21 @@ public class UserController : ControllerBase
 
         var user = await _userManager.FindByNameAsync(model.UserName);
 
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        if (user == null)
         {
-            var token = _tokenService.CreateToken(user);
-            return Ok(token);
+            return Unauthorized();
         }
 
-        return Unauthorized();
+        return new UserResponse
+        {
+            Email = user.Email,
+            UserName = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Token = _tokenService.CreateToken(user),
+        };
     }
+
 
     [HttpGet("EmailConfirmation")]
     public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -94,6 +103,4 @@ public class UserController : ControllerBase
 
         return Ok("Email confirmed");
     }
-
-
 }
