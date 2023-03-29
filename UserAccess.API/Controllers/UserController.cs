@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UserAccess.BLL.Interfaces;
 using UserAccess.BLL.Models;
+using UserAccess.BLL.Models.Requests;
 using UserAccess.BLL.Models.Responses;
 using UserAccess.DAL.Entities;
 
@@ -107,5 +108,46 @@ public class UserController : ControllerBase
         }
 
         return Ok("Email confirmed");
+    }
+
+    [HttpPost("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user == null)
+        {
+            return BadRequest("User does not exist");
+        }
+
+        var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var resetLink = Url.Action(nameof(PasswordReset), "User", new { passwordToken, email = user.Email }, Request.Scheme);
+        
+        await _emailService.SendEmailAsync(email,
+            "Behoof Password Reset",
+            $"Click the link to reset your password:\n{resetLink}");
+
+        return Ok("Check your email to reset your password");
+    }
+
+    [HttpPost("PasswordReset")]
+    public async Task<IActionResult> PasswordReset(ResetPasswordModel model)
+    {
+        var user = await _userManager.FindByEmailAsync(model.Email);
+
+        if (user == null)
+        {
+            return BadRequest("User does not exist");
+        }
+
+        var resetResult = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+        
+        if (!resetResult.Succeeded)
+        {
+            return BadRequest($"Unable to reset password.");
+        }
+
+        return Ok("Password reset successfully");
+
     }
 }

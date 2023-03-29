@@ -16,8 +16,4 @@
       <ProjectReference Include="..\UserAccess.DAL\UserAccess.DAL.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\Requests" />
-    </ItemGroup>
-
 </Project>
