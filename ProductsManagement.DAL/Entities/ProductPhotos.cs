@@ -3,8 +3,8 @@
     public class ProductPhotos
     {
         public int Id { get; set; }
-        public int? Trackedproductsid { get; set; }
-        public string Photourl { get; set; } = null!;
+        public int TrackedProductsId { get; set; }
+        public string PhotoUrl { get; set; } = null!;
 
         public virtual TrackedProducts? TrackedProduct { get; set; }
     }

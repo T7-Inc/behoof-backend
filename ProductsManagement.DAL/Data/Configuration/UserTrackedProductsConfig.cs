@@ -8,27 +8,30 @@ public class UserTrackedProductsConfig : IEntityTypeConfiguration<UserTrackedPro
 {
     public void Configure(EntityTypeBuilder<UserTrackedProducts> builder)
     {
-        builder.HasKey(e => new { e.Userid, e.Trackedproductsid })
-            .HasName("usertrackedproducts_pkey");
-
         builder.ToTable("usertrackedproducts");
 
-        builder.Property(e => e.Userid)
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Id)
+            .UseIdentityColumn()
+            .HasColumnName("id");
+        
+        builder.Property(e => e.UserId)
             .HasMaxLength(255)
             .HasColumnName("userid");
 
-        builder.Property(e => e.Trackedproductsid).HasColumnName("trackedproductsid");
+        builder.Property(e => e.TrackedproductsId).HasColumnName("trackedproductsid");
 
-        builder.Property(e => e.Rulesetid).HasColumnName("rulesetid");
+        builder.Property(e => e.RulesetId).HasColumnName("rulesetid");
 
         builder.HasOne(d => d.RuleSet)
             .WithMany(p => p.UserTrackedProducts)
-            .HasForeignKey(d => d.Rulesetid)
+            .HasForeignKey(d => d.RulesetId)
             .HasConstraintName("usertrackedproducts_rulesetid_fkey");
 
         builder.HasOne(d => d.TrackedProduct)
             .WithMany(p => p.UserTrackedProducts)
-            .HasForeignKey(d => d.Trackedproductsid)
+            .HasForeignKey(d => d.TrackedproductsId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("usertrackedproducts_trackedproductsid_fkey");
     }

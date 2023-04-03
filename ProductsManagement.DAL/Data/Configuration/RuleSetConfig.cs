@@ -10,7 +10,11 @@ public class RuleSetConfig : IEntityTypeConfiguration<RuleSet>
     {
         builder.ToTable("rulesets");
 
-        builder.Property(e => e.Id).HasColumnName("id");
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Id)
+            .UseIdentityColumn()
+            .HasColumnName("id");
 
         builder.Property(e => e.Instock).HasColumnName("instock");
 

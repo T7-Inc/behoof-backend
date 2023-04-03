@@ -10,11 +10,15 @@ public class ProductReviewsConfig : IEntityTypeConfiguration<ProductReviews>
     {
         builder.ToTable("reviewproducts");
 
-        builder.Property(e => e.Id).HasColumnName("id");
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Id)
+            .UseIdentityColumn()
+            .HasColumnName("id");
 
         builder.Property(e => e.Rating).HasColumnName("rating");
 
-        builder.Property(e => e.Reviewcontent)
+        builder.Property(e => e.ReviewContent)
             .HasColumnType("character varying")
             .HasColumnName("reviewcontent");
     }

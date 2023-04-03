@@ -2,9 +2,10 @@
 {
     public class UserTrackedProducts
     {
-        public string Userid { get; set; } = null!;
-        public int Trackedproductsid { get; set; }
-        public int? Rulesetid { get; set; }
+        public int Id { get; set; }
+        public string UserId { get; set; } = null!;
+        public int TrackedproductsId { get; set; }
+        public int? RulesetId { get; set; }
 
         public virtual RuleSet? RuleSet { get; set; }
         public virtual TrackedProducts TrackedProduct { get; set; } = null!;

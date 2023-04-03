@@ -9,11 +9,15 @@ public class TrackedProductsConfig : IEntityTypeConfiguration<TrackedProducts>
     public void Configure(EntityTypeBuilder<TrackedProducts> builder)
     {
         builder.ToTable("trackedproducts");
+        
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Id)
+            .UseIdentityColumn()
+            .HasColumnName("id");
 
         builder.HasIndex(e => e.Producturl, "trackedproducts_producturl_key")
             .IsUnique();
-
-        builder.Property(e => e.Id).HasColumnName("id");
 
         builder.Property(e => e.Aproximateprofit).HasColumnName("aproximateprofit");
 

@@ -10,7 +10,11 @@ public class ProductPricesConfig : IEntityTypeConfiguration<ProductPrices>
     {
         builder.ToTable("productprices");
 
-        builder.Property(e => e.Id).HasColumnName("id");
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Id)
+            .UseIdentityColumn()
+            .HasColumnName("id");
 
         builder.Property(e => e.Created)
             .HasColumnType("timestamp without time zone")
@@ -18,11 +22,11 @@ public class ProductPricesConfig : IEntityTypeConfiguration<ProductPrices>
 
         builder.Property(e => e.Price).HasColumnName("price");
 
-        builder.Property(e => e.Trackedproductsid).HasColumnName("trackedproductsid");
+        builder.Property(e => e.TrackedProductsId).HasColumnName("trackedproductsid");
 
         builder.HasOne(d => d.TrackedProduct)
             .WithMany(p => p.ProductPrices)
-            .HasForeignKey(d => d.Trackedproductsid)
+            .HasForeignKey(d => d.TrackedProductsId)
             .HasConstraintName("productprices_trackedproductsid_fkey");
     }
 }

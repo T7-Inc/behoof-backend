@@ -51,7 +51,7 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    productid = table.Column<int>(type: "integer", nullable: true),
+                    productid = table.Column<int>(type: "integer", nullable: false),
                     shop = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     offerurl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     price = table.Column<double>(type: "double precision", nullable: false),
@@ -65,7 +65,8 @@ namespace ProductsManagement.DAL.Migrations
                         name: "productoffers_productid_fkey",
                         column: x => x.productid,
                         principalTable: "trackedproducts",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,7 +75,7 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    trackedproductsid = table.Column<int>(type: "integer", nullable: true),
+                    trackedproductsid = table.Column<int>(type: "integer", nullable: false),
                     photourl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
@@ -84,7 +85,8 @@ namespace ProductsManagement.DAL.Migrations
                         name: "productphotos_trackedproductsid_fkey",
                         column: x => x.trackedproductsid,
                         principalTable: "trackedproducts",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,7 +95,7 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    trackedproductsid = table.Column<int>(type: "integer", nullable: true),
+                    trackedproductsid = table.Column<int>(type: "integer", nullable: false),
                     price = table.Column<double>(type: "double precision", nullable: false),
                     created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -104,7 +106,8 @@ namespace ProductsManagement.DAL.Migrations
                         name: "productprices_trackedproductsid_fkey",
                         column: x => x.trackedproductsid,
                         principalTable: "trackedproducts",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,50 +116,56 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Trackedproductsid = table.Column<int>(type: "integer", nullable: true),
+                    TrackedProductsId = table.Column<int>(type: "integer", nullable: false),
                     reviewcontent = table.Column<string>(type: "character varying", nullable: true),
                     Username = table.Column<string>(type: "text", nullable: false),
-                    Userphoto = table.Column<string>(type: "text", nullable: true),
+                    UserPhoto = table.Column<string>(type: "text", nullable: true),
                     rating = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_reviewproducts", x => x.id);
                     table.ForeignKey(
-                        name: "FK_reviewproducts_trackedproducts_Trackedproductsid",
-                        column: x => x.Trackedproductsid,
+                        name: "FK_reviewproducts_trackedproducts_TrackedProductsId",
+                        column: x => x.TrackedProductsId,
                         principalTable: "trackedproducts",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "userlikedproducts",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    productid = table.Column<int>(type: "integer", nullable: true)
+                    productid = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("userlikedproducts_pkey", x => x.userid);
+                    table.PrimaryKey("PK_userlikedproducts", x => x.id);
                     table.ForeignKey(
                         name: "userlikedproducts_productid_fkey",
                         column: x => x.productid,
                         principalTable: "trackedproducts",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "usertrackedproducts",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     trackedproductsid = table.Column<int>(type: "integer", nullable: false),
                     rulesetid = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("usertrackedproducts_pkey", x => new { x.userid, x.trackedproductsid });
+                    table.PrimaryKey("PK_usertrackedproducts", x => x.id);
                     table.ForeignKey(
                         name: "usertrackedproducts_rulesetid_fkey",
                         column: x => x.rulesetid,
@@ -185,9 +194,9 @@ namespace ProductsManagement.DAL.Migrations
                 column: "trackedproductsid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_reviewproducts_Trackedproductsid",
+                name: "IX_reviewproducts_TrackedProductsId",
                 table: "reviewproducts",
-                column: "Trackedproductsid");
+                column: "TrackedProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "trackedproducts_producturl_key",

@@ -10,19 +10,23 @@ public class ProductOffersConfig : IEntityTypeConfiguration<ProductOffers>
     {
         builder.ToTable("productoffers");
 
-        builder.Property(e => e.Id).HasColumnName("id");
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Id)
+            .UseIdentityColumn()
+            .HasColumnName("id");
 
         builder.Property(e => e.Instock).HasColumnName("instock");
 
-        builder.Property(e => e.Offerurl)
+        builder.Property(e => e.OfferUrl)
             .HasMaxLength(255)
             .HasColumnName("offerurl");
 
         builder.Property(e => e.Price).HasColumnName("price");
 
-        builder.Property(e => e.Productid).HasColumnName("productid");
+        builder.Property(e => e.ProductId).HasColumnName("productid");
 
-        builder.Property(e => e.Shippingcost).HasColumnName("shippingcost");
+        builder.Property(e => e.ShippingCost).HasColumnName("shippingcost");
 
         builder.Property(e => e.Shop)
             .HasMaxLength(50)
@@ -30,7 +34,7 @@ public class ProductOffersConfig : IEntityTypeConfiguration<ProductOffers>
 
         builder.HasOne(d => d.Product)
             .WithMany(p => p.ProductOffers)
-            .HasForeignKey(d => d.Productid)
+            .HasForeignKey(d => d.ProductId)
             .HasConstraintName("productoffers_productid_fkey");
     }
 }

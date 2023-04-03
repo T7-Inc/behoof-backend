@@ -3,7 +3,7 @@
     public class ProductPrices
     {
         public int Id { get; set; }
-        public int? Trackedproductsid { get; set; }
+        public int TrackedProductsId { get; set; }
         public double Price { get; set; }
         public DateTime Created { get; set; }
 

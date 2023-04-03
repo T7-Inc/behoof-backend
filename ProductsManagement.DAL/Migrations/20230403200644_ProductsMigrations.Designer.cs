@@ -12,7 +12,7 @@ using ProductsManagement.DAL.Data;
 namespace ProductsManagement.DAL.Migrations
 {
     [DbContext(typeof(ProductsDbContext))]
-    [Migration("20230403173046_ProductsMigrations")]
+    [Migration("20230403200644_ProductsMigrations")]
     partial class ProductsMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace ProductsManagement.DAL.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("instock");
 
-                    b.Property<string>("Offerurl")
+                    b.Property<string>("OfferUrl")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
@@ -47,11 +47,11 @@ namespace ProductsManagement.DAL.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("price");
 
-                    b.Property<int?>("Productid")
+                    b.Property<int>("ProductId")
                         .HasColumnType("integer")
                         .HasColumnName("productid");
 
-                    b.Property<double?>("Shippingcost")
+                    b.Property<double?>("ShippingCost")
                         .HasColumnType("double precision")
                         .HasColumnName("shippingcost");
 
@@ -63,7 +63,7 @@ namespace ProductsManagement.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Productid");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("productoffers", (string)null);
                 });
@@ -77,19 +77,19 @@ namespace ProductsManagement.DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Photourl")
+                    b.Property<string>("PhotoUrl")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("photourl");
 
-                    b.Property<int?>("Trackedproductsid")
+                    b.Property<int>("TrackedProductsId")
                         .HasColumnType("integer")
                         .HasColumnName("trackedproductsid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Trackedproductsid");
+                    b.HasIndex("TrackedProductsId");
 
                     b.ToTable("productphotos", (string)null);
                 });
@@ -111,13 +111,13 @@ namespace ProductsManagement.DAL.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("price");
 
-                    b.Property<int?>("Trackedproductsid")
+                    b.Property<int>("TrackedProductsId")
                         .HasColumnType("integer")
                         .HasColumnName("trackedproductsid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Trackedproductsid");
+                    b.HasIndex("TrackedProductsId");
 
                     b.ToTable("productprices", (string)null);
                 });
@@ -135,23 +135,23 @@ namespace ProductsManagement.DAL.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("rating");
 
-                    b.Property<string>("Reviewcontent")
+                    b.Property<string>("ReviewContent")
                         .HasColumnType("character varying")
                         .HasColumnName("reviewcontent");
 
-                    b.Property<int?>("Trackedproductsid")
+                    b.Property<int>("TrackedProductsId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("UserPhoto")
+                        .HasColumnType("text");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Userphoto")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Trackedproductsid");
+                    b.HasIndex("TrackedProductsId");
 
                     b.ToTable("reviewproducts", (string)null);
                 });
@@ -238,44 +238,58 @@ namespace ProductsManagement.DAL.Migrations
 
             modelBuilder.Entity("ProductsManagement.DAL.Entities.UserLikedProducts", b =>
                 {
-                    b.Property<string>("Userid")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("productid");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("userid");
 
-                    b.Property<int?>("Productid")
-                        .HasColumnType("integer")
-                        .HasColumnName("productid");
+                    b.HasKey("Id");
 
-                    b.HasKey("Userid")
-                        .HasName("userlikedproducts_pkey");
-
-                    b.HasIndex("Productid");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("userlikedproducts", (string)null);
                 });
 
             modelBuilder.Entity("ProductsManagement.DAL.Entities.UserTrackedProducts", b =>
                 {
-                    b.Property<string>("Userid")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("RulesetId")
+                        .HasColumnType("integer")
+                        .HasColumnName("rulesetid");
+
+                    b.Property<int>("TrackedproductsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("trackedproductsid");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("userid");
 
-                    b.Property<int>("Trackedproductsid")
-                        .HasColumnType("integer")
-                        .HasColumnName("trackedproductsid");
+                    b.HasKey("Id");
 
-                    b.Property<int?>("Rulesetid")
-                        .HasColumnType("integer")
-                        .HasColumnName("rulesetid");
+                    b.HasIndex("RulesetId");
 
-                    b.HasKey("Userid", "Trackedproductsid")
-                        .HasName("usertrackedproducts_pkey");
-
-                    b.HasIndex("Rulesetid");
-
-                    b.HasIndex("Trackedproductsid");
+                    b.HasIndex("TrackedproductsId");
 
                     b.ToTable("usertrackedproducts", (string)null);
                 });
@@ -284,7 +298,9 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     b.HasOne("ProductsManagement.DAL.Entities.TrackedProducts", "Product")
                         .WithMany("ProductOffers")
-                        .HasForeignKey("Productid")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("productoffers_productid_fkey");
 
                     b.Navigation("Product");
@@ -294,7 +310,9 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     b.HasOne("ProductsManagement.DAL.Entities.TrackedProducts", "TrackedProduct")
                         .WithMany("ProductPhotos")
-                        .HasForeignKey("Trackedproductsid")
+                        .HasForeignKey("TrackedProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("productphotos_trackedproductsid_fkey");
 
                     b.Navigation("TrackedProduct");
@@ -304,7 +322,9 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     b.HasOne("ProductsManagement.DAL.Entities.TrackedProducts", "TrackedProduct")
                         .WithMany("ProductPrices")
-                        .HasForeignKey("Trackedproductsid")
+                        .HasForeignKey("TrackedProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("productprices_trackedproductsid_fkey");
 
                     b.Navigation("TrackedProduct");
@@ -314,7 +334,9 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     b.HasOne("ProductsManagement.DAL.Entities.TrackedProducts", "TrackedProduct")
                         .WithMany("ReviewProducts")
-                        .HasForeignKey("Trackedproductsid");
+                        .HasForeignKey("TrackedProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TrackedProduct");
                 });
@@ -323,7 +345,9 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     b.HasOne("ProductsManagement.DAL.Entities.TrackedProducts", "Product")
                         .WithMany("UserLikedProducts")
-                        .HasForeignKey("Productid")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("userlikedproducts_productid_fkey");
 
                     b.Navigation("Product");
@@ -333,12 +357,12 @@ namespace ProductsManagement.DAL.Migrations
                 {
                     b.HasOne("ProductsManagement.DAL.Entities.RuleSet", "RuleSet")
                         .WithMany("UserTrackedProducts")
-                        .HasForeignKey("Rulesetid")
+                        .HasForeignKey("RulesetId")
                         .HasConstraintName("usertrackedproducts_rulesetid_fkey");
 
                     b.HasOne("ProductsManagement.DAL.Entities.TrackedProducts", "TrackedProduct")
                         .WithMany("UserTrackedProducts")
-                        .HasForeignKey("Trackedproductsid")
+                        .HasForeignKey("TrackedproductsId")
                         .IsRequired()
                         .HasConstraintName("usertrackedproducts_trackedproductsid_fkey");
 
