@@ -6,7 +6,7 @@ namespace ProductsManagement.DAL.Repositories;
 
 public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-    private readonly ProductsDbContext _dbContext;
+    protected readonly ProductsDbContext _dbContext;
 
     public GenericRepository(ProductsDbContext dbContext)
     {
@@ -18,25 +18,38 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : cla
         return await _dbContext.Set<T>().ToListAsync();
     }
 
-    public async Task<T> GetAsync(object id)
-    {
-        return await _dbContext.Set<T>().FindAsync(id);
-    }
-
-    public async Task DeleteAsync(object id)
+    public async Task<T> GetAsync(int id)
     {
         var entity = await _dbContext.Set<T>().FindAsync(id);
-        _dbContext.Set<T>().Remove(entity);
+        
+        if (entity == null)
+        {
+            throw new Exception($"Entity({typeof(T)}) with {id} not found.");
+        }
+        
+        return entity;
     }
-
-    public async Task ReplaceAsync(T model)
-    {
-        _dbContext.Entry(model).State = EntityState.Modified;
-    }
-
+    
     public async Task AddAsync(T model)
     {
         await _dbContext.Set<T>().AddAsync(model);
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var entity = await _dbContext.Set<T>().FindAsync(id);
+        
+        if (entity == null)
+        {
+            throw new Exception($"Entity({typeof(T)}) with {id} not found.");
+        }
+        
+        _dbContext.Set<T>().Remove(entity);
+    }
+
+    public async Task UpdateAsync(T model)
+    {
+        await Task.Run(() => _dbContext.Set<T>().Update(model));
     }
 
 }
