@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ProductsManagement.DAL\ProductsManagement.DAL.csproj" />
+      <ProjectReference Include="..\ProductsManagement.BLL\ProductsManagement.BLL.csproj" />
     </ItemGroup>
 
 </Project>
