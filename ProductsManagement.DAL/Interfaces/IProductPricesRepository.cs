@@ -2,7 +2,7 @@
 
 namespace ProductsManagement.DAL.Interfaces;
 
-public interface IProductPricesRepository
+public interface IProductPricesRepository : IGenericRepository<ProductPrices>
 {
     public Task<IList<ProductPrices>> getAllPricesOfProduct(int productId);
 }

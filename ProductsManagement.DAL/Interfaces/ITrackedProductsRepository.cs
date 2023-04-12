@@ -2,7 +2,7 @@
 
 namespace ProductsManagement.DAL.Interfaces;
 
-public interface ITrackedProductsRepository
+public interface ITrackedProductsRepository : IGenericRepository<TrackedProducts>
 {
     public Task<TrackedProducts> GetAllInformationAboutTrackedProduct(int id);
 }

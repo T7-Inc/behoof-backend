@@ -1,5 +1,7 @@
-﻿namespace ProductsManagement.DAL.Interfaces;
+﻿using ProductsManagement.DAL.Entities;
 
-public interface IRuleSetRepository
+namespace ProductsManagement.DAL.Interfaces;
+
+public interface IRuleSetRepository : IGenericRepository<RuleSet>
 {
 }
