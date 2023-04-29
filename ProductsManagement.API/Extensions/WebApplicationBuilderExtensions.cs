@@ -30,6 +30,15 @@ public static class WebApplicationBuilderExtensions
                 "X-RapidAPI-Host", builder.Configuration["ThirdPartyAPIs:AliexpressAPI:Host"]);
             client.BaseAddress = new Uri(builder.Configuration["ThirdPartyAPIs:AliexpressAPI:Url"]);
         });
+        builder.Services.AddTransient<AmazonProductService>();
+        builder.Services.AddHttpClient<AmazonProductService >(client =>
+        {
+            client.DefaultRequestHeaders.Add(
+                "X-RapidAPI-Key", builder.Configuration["ThirdPartyAPIs:AmazonAPI:Key"]);
+            client.DefaultRequestHeaders.Add(
+                "X-RapidAPI-Host", builder.Configuration["ThirdPartyAPIs:AmazonAPI:Host"]);
+            client.BaseAddress = new Uri(builder.Configuration["ThirdPartyAPIs:AmazonAPI:Url"]);
+        });
         
         builder.Services.AddAuthorization();
 

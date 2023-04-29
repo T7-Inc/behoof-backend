@@ -8,9 +8,9 @@ namespace ProductsManagement.API.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly AliexpressProductsService _aliexpressProductsService;
+    private readonly AmazonProductService _aliexpressProductsService;
 
-    public ProductsController(AliexpressProductsService aliexpressProductsService)
+    public ProductsController(AmazonProductService aliexpressProductsService)
     {
         _aliexpressProductsService = aliexpressProductsService;
     }
@@ -23,7 +23,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var results = await _aliexpressProductsService.SearchAsync(query, page, null);
+            var results = await _aliexpressProductsService.SearchAsync(query, page, "US");
             return Ok(results);
         }
         catch (Exception e)
@@ -49,20 +49,20 @@ public class ProductsController : ControllerBase
         }
     }
     
-    [HttpGet("SearchByImage")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<ProductSearchResponse>>> SearchByImage([FromQuery] string imageUrl)
-    {
-        try
-        {
-            var results = await _aliexpressProductsService.SearchByImage(imageUrl, "priceAsc", null, null);
-            return Ok(results);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-        }
-    }
+    // [HttpGet("SearchByImage")]
+    // [ProducesResponseType(StatusCodes.Status200OK)]
+    // [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    // public async Task<ActionResult<IEnumerable<ProductSearchResponse>>> SearchByImage([FromQuery] string imageUrl)
+    // {
+    //     try
+    //     {
+    //         var results = await _aliexpressProductsService.SearchByImage(imageUrl, "priceAsc", null, null);
+    //         return Ok(results);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+    //     }
+    // }
 }
