@@ -6,18 +6,17 @@ public class AmazonSearchResult
 
     public string Title { get; set; } = null!;
 
-    public List<string> Images { get; set; } = null!;
+    public List<ImageNested> Images { get; set; } = null!;
     
-    public Price ProductPrice { get; set; } = null!;
+    public PriceNested Price { get; set; } = null!;
 
-    public class Price
+    public class ImageNested
+    {
+        public string Image { get; set; }
+    }
+
+    public class PriceNested
     {
         public string Amount { get; set; } = null!;
-        
-        public string ListPrice { get; set; } = null!;
-        
-        public string Currency { get; set; } = null!;
-        
-        public string Symbol { get; set; } = null!;
     }
 }

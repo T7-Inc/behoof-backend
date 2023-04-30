@@ -1,6 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Net.Http.Headers;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProductsManagement.BLL.Configurations;
+using ProductsManagement.BLL.Services.Abstract;
 using ProductsManagement.BLL.Services.Concrete;
 using ProductsManagement.DAL.Data;
 
@@ -19,10 +21,9 @@ public static class WebApplicationBuilderExtensions
         var mapperConfig = new MapperConfiguration(mc =>
             mc.AddProfile(new AutoMapperProfile()));
         var mapper = mapperConfig.CreateMapper();
-
         builder.Services.AddSingleton(mapper);
-        builder.Services.AddTransient<AliexpressProductsService>();
-        builder.Services.AddHttpClient<AliexpressProductsService>(client =>
+        
+        builder.Services.AddHttpClient<IAliexpressProductsService, AliexpressProductsService>(client =>
         {
             client.DefaultRequestHeaders.Add(
                 "X-RapidAPI-Key", builder.Configuration["ThirdPartyAPIs:AliexpressAPI:Key"]);
@@ -30,8 +31,8 @@ public static class WebApplicationBuilderExtensions
                 "X-RapidAPI-Host", builder.Configuration["ThirdPartyAPIs:AliexpressAPI:Host"]);
             client.BaseAddress = new Uri(builder.Configuration["ThirdPartyAPIs:AliexpressAPI:Url"]);
         });
-        builder.Services.AddTransient<AmazonProductService>();
-        builder.Services.AddHttpClient<AmazonProductService >(client =>
+        
+        builder.Services.AddHttpClient<IAmazonProductsService, AmazonProductsService >(client =>
         {
             client.DefaultRequestHeaders.Add(
                 "X-RapidAPI-Key", builder.Configuration["ThirdPartyAPIs:AmazonAPI:Key"]);
@@ -39,6 +40,13 @@ public static class WebApplicationBuilderExtensions
                 "X-RapidAPI-Host", builder.Configuration["ThirdPartyAPIs:AmazonAPI:Host"]);
             client.BaseAddress = new Uri(builder.Configuration["ThirdPartyAPIs:AmazonAPI:Url"]);
         });
+        
+        builder.Services.AddHttpClient<IGoogleSearchService, GoogleSearchService>(client =>
+        {
+            client.BaseAddress = new Uri(builder.Configuration["ThirdPartyAPIs:GoogleAPI:Url"]);
+        });
+
+        builder.Services.AddTransient<IProductsService, ProductsService>();
         
         builder.Services.AddAuthorization();
 

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Microsoft.AspNetCore.WebUtilities;
 using ProductsManagement.BLL.DTO.Responses;
@@ -7,7 +8,7 @@ using ProductsManagement.BLL.ThirdPartyAPIsDTO.Aliexpress.Responses;
 
 namespace ProductsManagement.BLL.Services.Concrete;
 
-public class AliexpressProductsService : IMarketplaceProductsService
+public class AliexpressProductsService : IAliexpressProductsService
 {
     private readonly HttpClient _httpClient;
     private readonly IMapper _mapper;
@@ -65,7 +66,49 @@ public class AliexpressProductsService : IMarketplaceProductsService
             responseContent, "result.item");
         return _mapper.Map<AliexpressProductDetailResult, ProductDetailResponse>(productDetail);
     }
-    
+
+    public async Task<ProductDetailForOfferResponse> ProductDetailForOfferAsync(string productId, string? region, int? n)
+    {
+        var parameters = new Dictionary<string, string>
+        {
+            ["itemId"] = productId
+        };
+        if(region != null)
+            parameters.Add("region", region);
+
+        var uri = QueryHelpers.AddQueryString("item_detail", parameters);
+        var response = await _httpClient.GetAsync(uri);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        
+        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDetailForOfferResponse.json");
+        // var responseContent = "";
+        // for (var i = 0; i <= n; i++)
+        // {
+        //     responseContent = (await r.ReadLineAsync())!;
+        //     if (i == n)
+        //         break;
+        // }
+        // if (responseContent[^1] == ',')
+        //     responseContent = responseContent.Remove(responseContent.Length-1);
+
+        var productDetail = JsonParseHelper.ObjectFromJsonPropertyName<AliexpressProductDetailForOfferResult>(
+            responseContent, "result");
+        var priceUsdStr = productDetail.Item.Sku.Def.PromotionPrice;
+        float? priceUsd = null;
+        if (!string.IsNullOrEmpty(priceUsdStr))
+        {
+            var match = Regex.Match(priceUsdStr, @"^(\d+\.\d{2})");
+            if (match.Success)
+                priceUsd = float.Parse(match.Value);
+        }
+
+        var result = 
+            _mapper.Map<AliexpressProductDetailForOfferResult, ProductDetailForOfferResponse>(productDetail);
+        result.ProductPrice = priceUsd;
+        return result;
+    }
+
     public async Task<IEnumerable<ProductSearchResponse>> SearchByImage(string imgUrl, string? sort, string? categoryId, string? region)
     {
         var parameters = new Dictionary<string, string>
@@ -84,7 +127,7 @@ public class AliexpressProductsService : IMarketplaceProductsService
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         
-        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDetailResponse.json");
+        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedSearchByImageResponse.json");
         // var responseContent = await r.ReadToEndAsync();
         
         var searchContent = JsonParseHelper.ObjectFromJsonPropertyName<List<AliexpressSearchResult>>(

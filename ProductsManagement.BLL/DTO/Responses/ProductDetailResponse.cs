@@ -6,7 +6,7 @@ public class ProductDetailResponse
     
     public string Title { get; set; } = null!;
 
-    public IList<string> Images { get; set; } = null!;
+    public IEnumerable<string> Images { get; set; } = null!;
     
-    public string CategoryId { get; set; } = null!;
+    public IEnumerable<string> Categories { get; set; } = null!;
 }

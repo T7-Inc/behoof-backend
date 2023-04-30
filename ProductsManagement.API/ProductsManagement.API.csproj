@@ -20,4 +20,12 @@
       <ProjectReference Include="..\ProductsManagement.BLL\ProductsManagement.BLL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="StoredJsonAPIResponses\Aliexpress\DetailForOfferResponses\1.json" />
+      <_ContentIncludedByDefault Remove="StoredJsonAPIResponses\Aliexpress\DetailForOfferResponses\2.json" />
+      <_ContentIncludedByDefault Remove="StoredJsonAPIResponses\Aliexpress\DetailForOfferResponses\3.json" />
+      <_ContentIncludedByDefault Remove="StoredJsonAPIResponses\Aliexpress\DetailForOfferResponses\4.json" />
+      <_ContentIncludedByDefault Remove="StoredJsonAPIResponses\Aliexpress\DetailForOfferResponses\5.json" />
+    </ItemGroup>
+
 </Project>

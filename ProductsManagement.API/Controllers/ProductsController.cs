@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductsManagement.BLL.DTO.Requests;
 using ProductsManagement.BLL.DTO.Responses;
-using ProductsManagement.BLL.Services.Concrete;
+using ProductsManagement.BLL.Services.Abstract;
 
 namespace ProductsManagement.API.Controllers;
 
@@ -8,11 +9,13 @@ namespace ProductsManagement.API.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
-    private readonly AmazonProductService _aliexpressProductsService;
+    private readonly IProductsService _productsService;
+    private readonly IAmazonProductsService _amazonProductsService;
 
-    public ProductsController(AmazonProductService aliexpressProductsService)
+    public ProductsController(IProductsService productsService, IAmazonProductsService amazonProductsService)
     {
-        _aliexpressProductsService = aliexpressProductsService;
+        _productsService = productsService;
+        _amazonProductsService = amazonProductsService;
     }
     
     [HttpGet("Search")]
@@ -23,7 +26,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var results = await _aliexpressProductsService.SearchAsync(query, page, "US");
+            var results = await _amazonProductsService.SearchAsync(query, page, "US");
             return Ok(results);
         }
         catch (Exception e)
@@ -40,7 +43,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            var results = await _aliexpressProductsService.ProductDetailAsync(productId, null);
+            var results = await _amazonProductsService.ProductDetailAsync(productId, null);
             return Ok(results);
         }
         catch (Exception e)
@@ -65,4 +68,20 @@ public class ProductsController : ControllerBase
     //         return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
     //     }
     // }
+    
+    [HttpGet("GetOffers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<ProductOfferResponse>>> SearchByImage([FromQuery] ProductOffersRequest request)
+    {
+        try
+        {
+            var results = await _productsService.GetProductOffers(request);
+            return Ok(results);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        }
+    }
 }
