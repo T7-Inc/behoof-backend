@@ -6,4 +6,5 @@ namespace ProductsManagement.BLL.Services.Abstract;
 public interface IProductsService
 {
     Task<IEnumerable<ProductOfferResponse>> GetProductOffers(ProductOffersRequest request);
+    Task<IEnumerable<ProductSearchResponse>> ProductSearch(string query, int pageNumber, string? region);
 }

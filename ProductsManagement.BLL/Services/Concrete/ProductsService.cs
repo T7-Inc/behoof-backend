@@ -1,3 +1,4 @@
+using System.IO.Enumeration;
 using System.Text.RegularExpressions;
 using AutoMapper;
 using ProductsManagement.BLL.DTO.Requests;
@@ -111,5 +112,19 @@ public class ProductsService : IProductsService
         return offers
             .Where(offer => offer.TotalPrice >= threshold)
             .OrderBy(offer => offer.TotalPrice).ToList();
+    }
+
+    public async Task<IEnumerable<ProductSearchResponse>> ProductSearch(string query, int pageNumber, string? region)
+    {
+        var aliexpressProducts =
+            await _aliexpressService.SearchAsync(query, pageNumber, region);
+        
+        var amazonProducts =
+            await _amazonService.SearchAsync(query, pageNumber, region);
+
+        var random = new Random();
+        var shuffledProductsList = aliexpressProducts.Concat(amazonProducts).OrderBy(x => random.Next()).ToList();
+
+        return shuffledProductsList;
     }
 }

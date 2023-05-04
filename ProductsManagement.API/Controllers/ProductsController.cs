@@ -10,23 +10,25 @@ namespace ProductsManagement.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductsService _productsService;
+    private readonly IAliexpressProductsService _aliProductsService;
     private readonly IAmazonProductsService _amazonProductsService;
 
-    public ProductsController(IProductsService productsService, IAmazonProductsService amazonProductsService)
+    public ProductsController(IProductsService productsService, IAmazonProductsService amazonProductsService, IAliexpressProductsService aliProductsService)
     {
         _productsService = productsService;
         _amazonProductsService = amazonProductsService;
+        _aliProductsService = aliProductsService;
     }
     
     [HttpGet("Search")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<ProductSearchResponse>>> Search([FromQuery] string query, [FromQuery] int page)
+    public async Task<ActionResult<IEnumerable<ProductSearchResponse>>> Search([FromQuery] string query, [FromQuery] int page, string? region = "US")
     {
         try
         {
-            var results = await _amazonProductsService.SearchAsync(query, page, "US");
+            var results = await _productsService.ProductSearch(query, page, region);
             return Ok(results);
         }
         catch (Exception e)
