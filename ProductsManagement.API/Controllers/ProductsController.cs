@@ -10,14 +10,10 @@ namespace ProductsManagement.API.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IProductsService _productsService;
-    private readonly IAliexpressProductsService _aliProductsService;
-    private readonly IAmazonProductsService _amazonProductsService;
 
-    public ProductsController(IProductsService productsService, IAmazonProductsService amazonProductsService, IAliexpressProductsService aliProductsService)
+    public ProductsController(IProductsService productsService)
     {
         _productsService = productsService;
-        _amazonProductsService = amazonProductsService;
-        _aliProductsService = aliProductsService;
     }
     
     [HttpGet("Search")]
@@ -37,15 +33,15 @@ public class ProductsController : ControllerBase
         }
     }
     
-    [HttpGet("GetDetails")]
+    [HttpGet("GetDetail")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ProductDetailResponse>> GetProductDetail([FromQuery] string productId)
+    public async Task<ActionResult<ProductDetailResponse>> GetProductDetail(string productId, int marketplaceId)
     {
         try
         {
-            var results = await _amazonProductsService.ProductDetailAsync(productId, null);
+            var results = await _productsService.GetProductDetail(productId, marketplaceId);
             return Ok(results);
         }
         catch (Exception e)

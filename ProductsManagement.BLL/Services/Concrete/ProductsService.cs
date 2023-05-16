@@ -1,8 +1,8 @@
-using System.IO.Enumeration;
 using System.Text.RegularExpressions;
 using AutoMapper;
 using ProductsManagement.BLL.DTO.Requests;
 using ProductsManagement.BLL.DTO.Responses;
+using ProductsManagement.BLL.Enums;
 using ProductsManagement.BLL.Services.Abstract;
 
 namespace ProductsManagement.BLL.Services.Concrete;
@@ -23,6 +23,36 @@ public class ProductsService : IProductsService
         _aliexpressService = aliexpressService;
         _amazonService = amazonService;
         _googleSearchService = googleSearchService;
+    }
+
+    public async Task<IEnumerable<ProductSearchResponse>> ProductSearch(string query, int pageNumber, string? region)
+    {
+        var aliexpressProducts =
+            await _aliexpressService.SearchAsync(query, pageNumber, region);
+        
+        var amazonProducts =
+            await _amazonService.SearchAsync(query, pageNumber, region);
+
+        var random = new Random();
+        var shuffledProductsList = aliexpressProducts.Concat(amazonProducts).OrderBy(x => random.Next()).ToList();
+
+        return shuffledProductsList;
+    }
+
+    public async Task<ProductDetailResponse> GetProductDetail(string productId, int marketplaceId)
+    {
+        const string region = "US"; // Temporary
+        
+        var marketplace = (MarketplacesEnum) marketplaceId;
+        switch (marketplace)
+        {
+            case MarketplacesEnum.Aliexpress:
+                return await _aliexpressService.ProductDetailAsync(productId, region);
+            case MarketplacesEnum.Amazon:
+                return await _amazonService.ProductDetailAsync(productId, region);
+            default:
+                throw new ArgumentException("The invalid marketplace ID was passed");
+        }
     }
 
     public async Task<IEnumerable<ProductOfferResponse>> GetProductOffers(ProductOffersRequest request)
@@ -53,6 +83,9 @@ public class ProductsService : IProductsService
             offer.ShippingTo = request.Region;
             offer.ProductPrice = response.PriceUSD;
             offer.TotalPrice = response.PriceUSD + (detail.ShippingPrice ?? 0);
+            
+            if(string.IsNullOrEmpty(response.Url))
+                continue;
             offer.SellerUrl = response.Url;
             offers.Add(offer);
             i++;
@@ -112,19 +145,5 @@ public class ProductsService : IProductsService
         return offers
             .Where(offer => offer.TotalPrice >= threshold)
             .OrderBy(offer => offer.TotalPrice).ToList();
-    }
-
-    public async Task<IEnumerable<ProductSearchResponse>> ProductSearch(string query, int pageNumber, string? region)
-    {
-        var aliexpressProducts =
-            await _aliexpressService.SearchAsync(query, pageNumber, region);
-        
-        var amazonProducts =
-            await _amazonService.SearchAsync(query, pageNumber, region);
-
-        var random = new Random();
-        var shuffledProductsList = aliexpressProducts.Concat(amazonProducts).OrderBy(x => random.Next()).ToList();
-
-        return shuffledProductsList;
     }
 }

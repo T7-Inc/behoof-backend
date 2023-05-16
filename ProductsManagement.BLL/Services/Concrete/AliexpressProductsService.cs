@@ -64,7 +64,29 @@ public class AliexpressProductsService : IAliexpressProductsService
         
         var productDetail = JsonParseHelper.ObjectFromJsonPropertyName<AliexpressProductDetailResult>(
             responseContent, "result.item");
-        return _mapper.Map<AliexpressProductDetailResult, ProductDetailResponse>(productDetail);
+        var detail = _mapper.Map<AliexpressProductDetailResult, ProductDetailResponse>(productDetail);
+        detail.Description = await ProductDescriptionAsync(productId);
+        return detail;
+    }
+    
+    private async Task<DescriptionResponse> ProductDescriptionAsync(string productId)
+    {
+        var parameters = new Dictionary<string, string>
+        {
+            ["itemId"] = productId
+        };
+
+        var uri = QueryHelpers.AddQueryString("item_desc", parameters);
+        var response = await _httpClient.GetAsync(uri);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        
+        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDescriptionResponse.json");
+        // var responseContent = await r.ReadToEndAsync();
+        
+        var productDescription = JsonParseHelper.ObjectFromJsonPropertyName<AliexpressProductDescriptionResult>(
+            responseContent, "result.item");
+        return _mapper.Map<AliexpressProductDescriptionResult, DescriptionResponse>(productDescription);
     }
 
     public async Task<ProductDetailForOfferResponse> ProductDetailForOfferAsync(string productId, string? region, int? n)

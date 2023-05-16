@@ -54,6 +54,20 @@ public class AutoMapperProfile : Profile
                 options =>
                     options.MapFrom(result => result.Images.Select(imageUrl => "https:" + imageUrl)));
 
+        CreateMap<AliexpressProductDescriptionResult, DescriptionResponse>()
+            .ForMember(response => response.Images,
+                options =>
+                    options.MapFrom(result => 
+                        result.Description.Images.Select(imageUrl => "https:" + imageUrl)))
+            .ForMember(response => response.Properties,
+                options =>
+                    options.MapFrom(result => result.Properties.List
+                        .DistinctBy(prop => prop.Name)
+                        .ToDictionary(prop => prop.Name, prop => prop.Value)))
+            .ForMember(response => response.Text,
+                options =>
+                    options.MapFrom(result => string.Join('\n', result.Description.Text)));
+
         CreateMap<AliexpressProductDetailForOfferResult, ProductDetailForOfferResponse>()
             .ForMember(response => response.ShippingFrom,
                 options =>
@@ -80,8 +94,8 @@ public class AutoMapperProfile : Profile
                     options.MapFrom(result => result.Asin))
             .ForMember(response => response.ImageUrl,
                 options =>
-                    options.MapFrom(result => result.Images.FirstOrDefault() == null ? 
-                        result.Images.FirstOrDefault()!.Image : ""))
+                    options.MapFrom(result =>
+                        result.Images.FirstOrDefault() != null ? result.Images.FirstOrDefault()!.Image : ""))
             .ForMember(response => response.Title,
                 options =>
                     options.MapFrom(result => result.Title))

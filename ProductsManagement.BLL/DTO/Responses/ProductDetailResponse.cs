@@ -9,4 +9,6 @@ public class ProductDetailResponse
     public IEnumerable<string> Images { get; set; } = null!;
     
     public IEnumerable<string> Categories { get; set; } = null!;
+    
+    public DescriptionResponse Description { get; set; }
 }

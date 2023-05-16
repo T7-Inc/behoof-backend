@@ -64,7 +64,36 @@ public class AmazonProductsService : IAmazonProductsService
         if (productDetail == null)
             throw new JsonException("Unsuccessful json deserialization");
             
-        return _mapper.Map<AmazonProductDetailResult, ProductDetailResponse>(productDetail);
+        var detail = _mapper.Map<AmazonProductDetailResult, ProductDetailResponse>(productDetail);
+        detail.Description = ExtractProductDescription(productDetail);
+        return detail;
+    }
+    
+    private DescriptionResponse ExtractProductDescription(AmazonProductDetailResult detailResult)
+    {
+        var properties = new Dictionary<string, string>
+        {
+            ["Brand Name"] = detailResult.Brand,
+            ["Dimensions"] = detailResult.Info.Dimensions,
+            ["Weight"] = detailResult.Info.Weight
+        };
+        foreach (var prop in detailResult.Extra_info)
+        {
+            properties[prop.Name] = prop.Value;
+        }
+        foreach (var prop in detailResult.Overview)
+        {
+            properties[prop.Name] = prop.Value;
+        }
+        
+        var description = new DescriptionResponse
+        {
+            Text = string.Join('\n', detailResult.Features),
+            Properties = properties,
+            Images = new List<string>()
+        };
+        
+        return description;
     }
 
     public async Task<ProductDetailForOfferResponse> ProductDetailForOfferAsync(string productId, string? region, int? n)
