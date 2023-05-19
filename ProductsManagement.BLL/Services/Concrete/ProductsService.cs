@@ -4,6 +4,8 @@ using ProductsManagement.BLL.DTO.Requests;
 using ProductsManagement.BLL.DTO.Responses;
 using ProductsManagement.BLL.Enums;
 using ProductsManagement.BLL.Services.Abstract;
+using ProductsManagement.DAL.Entities;
+using ProductsManagement.DAL.Interfaces;
 
 namespace ProductsManagement.BLL.Services.Concrete;
 
@@ -15,14 +17,16 @@ public class ProductsService : IProductsService
     private readonly IAliexpressProductsService _aliexpressService;
     private readonly IAmazonProductsService _amazonService;
     private readonly IGoogleSearchService _googleSearchService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public ProductsService(IMapper mapper, IAliexpressProductsService aliexpressService,
-        IAmazonProductsService amazonService, IGoogleSearchService googleSearchService)
+        IAmazonProductsService amazonService, IGoogleSearchService googleSearchService, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _aliexpressService = aliexpressService;
         _amazonService = amazonService;
         _googleSearchService = googleSearchService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<IEnumerable<ProductSearchResponse>> ProductSearch(string query, int pageNumber, string? region)
@@ -145,5 +149,26 @@ public class ProductsService : IProductsService
         return offers
             .Where(offer => offer.TotalPrice >= threshold)
             .OrderBy(offer => offer.TotalPrice).ToList();
+    }
+
+    public async Task<IEnumerable<LikedProductResponse>> GetUserFavoriteProducts(string userId)
+    {
+        var favoriteProducts = await _unitOfWork.userLikedProductsRepository.GetInfoAboutProductsLikedByUser(userId);
+        
+        return _mapper.Map<IEnumerable<LikedProductResponse>>(favoriteProducts);
+    }
+    
+    public async Task AddProductToFavorites(LikedProductRequest request)
+    {
+        var mappedLikedProduct = _mapper.Map<UserLikedProducts>(request);
+        
+        await _unitOfWork.userLikedProductsRepository.AddAsync(mappedLikedProduct);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task DeleteProductFromFavorites(int likedProductId)
+    {
+        await _unitOfWork.userLikedProductsRepository.DeleteAsync(likedProductId);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

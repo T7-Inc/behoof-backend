@@ -1,9 +1,11 @@
 using AutoMapper;
+using ProductsManagement.BLL.DTO.Requests;
 using ProductsManagement.BLL.DTO.Responses;
 using ProductsManagement.BLL.Enums;
 using ProductsManagement.BLL.ThirdPartyAPIsDTO.Aliexpress.Responses;
 using ProductsManagement.BLL.ThirdPartyAPIsDTO.Amazon.Responses;
 using ProductsManagement.BLL.ThirdPartyAPIsDTO.Google.Responses;
+using ProductsManagement.DAL.Entities;
 
 namespace ProductsManagement.BLL.Configurations;
 
@@ -22,6 +24,16 @@ public class AutoMapperProfile : Profile
     private void CreateProductsMaps()
     {
         CreateMap<ProductDetailForOfferResponse, ProductOfferResponse>();
+        CreateMap<UserLikedProducts, LikedProductResponse>()
+            .ForMember(dest => dest.Id, 
+                opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.ImageUrl, 
+                opt => opt.MapFrom(src => src.Product.ProductPhotos.FirstOrDefault().PhotoUrl))
+            .ForMember(dest => dest.Title, 
+                opt => opt.MapFrom(src => src.Product.Name))
+            .ForMember(dest => dest.Url, 
+                opt => opt.MapFrom(src => src.Product.Producturl));
+        CreateMap<LikedProductRequest, UserLikedProducts>();
     }
 
     private void CreateAliexpressMaps()
