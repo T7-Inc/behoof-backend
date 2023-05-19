@@ -9,9 +9,9 @@ public class ProductReviewsRepository : GenericRepository<ProductReviews>, IProd
 {
     private readonly DbSet<ProductReviews> _productReviews;
     
-    public ProductReviewsRepository(ProductsDbContext dbContext, DbSet<ProductReviews> productReviews) : base(dbContext)
+    public ProductReviewsRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _productReviews = productReviews;
+        _productReviews = dbContext.Set<ProductReviews>();
     }
     
     public async Task<IEnumerable<ProductReviews>> GetReviewsOfProduct(int productId)

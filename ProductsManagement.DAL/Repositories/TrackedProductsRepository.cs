@@ -9,9 +9,9 @@ public class TrackedProductsRepository : GenericRepository<TrackedProducts>, ITr
 {
     private readonly DbSet<TrackedProducts> _trackedProducts;
     
-    public TrackedProductsRepository(ProductsDbContext dbContext, DbSet<TrackedProducts> trackedProducts) : base(dbContext)
+    public TrackedProductsRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _trackedProducts = trackedProducts;
+        _trackedProducts = dbContext.Set<TrackedProducts>();
     }
     
     public async Task<TrackedProducts> GetAllInformationAboutTrackedProduct(int id)
