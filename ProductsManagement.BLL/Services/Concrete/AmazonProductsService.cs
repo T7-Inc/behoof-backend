@@ -40,6 +40,7 @@ public class AmazonProductsService : IAmazonProductsService
         
         var searchContent = JsonParseHelper.ObjectFromJsonPropertyName<List<AmazonSearchResult>>(
             responseContent, "results");
+        
         return searchContent.Select(_mapper.Map<AmazonSearchResult, ProductSearchResponse>);
         
     }
