@@ -71,14 +71,14 @@ public class UserController : ControllerBase
 
         if (user == null)
         {
-            return Unauthorized();
+            return BadRequest("User does not exist");
         }
         
         var result = await _userManager.CheckPasswordAsync(user, userLoginModel.Password);
 
         if (!result)
         {
-            return Unauthorized();
+            return BadRequest("Wrong Credentials!");
         }
 
         return new UserResponse

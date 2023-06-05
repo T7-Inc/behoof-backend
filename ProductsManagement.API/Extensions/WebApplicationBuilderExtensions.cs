@@ -18,7 +18,7 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddDbContext<ProductsDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("DataBaseConnection"));
+            options.UseNpgsql(configuration.GetConnectionString("ProductDbConnection"));
         });
         
         var mapperConfig = new MapperConfiguration(mc =>

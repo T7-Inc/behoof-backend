@@ -4,8 +4,9 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-      <UserSecretsId>cb8b79b7-c72e-49a1-8640-d9c88d2f3f16</UserSecretsId>
-  </PropertyGroup>
+        <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+        <UserSecretsId>cb8b79b7-c72e-49a1-8640-d9c88d2f3f16</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
