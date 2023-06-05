@@ -17,7 +17,7 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddDbContext<UserDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("DataBaseConnection"));
+            options.UseNpgsql(configuration.GetConnectionString("IdentityDbConnection"));
         });
 
         builder.Services.AddIdentityCore<User>(options => { })

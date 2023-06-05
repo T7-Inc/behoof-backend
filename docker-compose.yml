@@ -1,0 +1,49 @@
+version: "3.8"
+
+networks:
+  backend:
+
+services:
+  
+  behoofapi:
+    container_name: behoof
+    image: ${DOCKER_REGISTRY-}behoof.api
+    build:
+      context: .
+      dockerfile: Behoof.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:IdentityDbConnection=Host=pgsql;Port=5432;Database=IdentityDb;Username=root;Password=root"
+      - "ConnectionStrings:ProductDbConnection=Host=pgsql;Port=5432;Database=ProductDb;Username=root;Password=root"
+    networks:
+      - backend
+    ports:
+      - "8003:80"
+  
+  pgsql:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: db
+    networks:
+      - backend
+    ports:
+      - "8001:5432"
+  
+  
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    networks:
+      - backend
+    ports:
+      - "8002:80"
+
+
