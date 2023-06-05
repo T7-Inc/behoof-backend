@@ -21,7 +21,7 @@ public class AliexpressProductsService : IAliexpressProductsService
 
     public async Task<IEnumerable<ProductSearchResponse>> SearchAsync(string query, int page, string? region)
     {
-        var parameters = new Dictionary<string, string>
+        /*var parameters = new Dictionary<string, string>
         {
             ["q"] = query,
             ["page"] = page.ToString(),
@@ -35,10 +35,10 @@ public class AliexpressProductsService : IAliexpressProductsService
         var uri = QueryHelpers.AddQueryString("item_search", parameters);
         var response = await _httpClient.GetAsync(uri);
         response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await response.Content.ReadAsStringAsync();*/
         
-        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedSearchResponse.json");
-        // var responseContent = await r.ReadToEndAsync();
+        var r = new StreamReader("E:\\Projects\\Behoof\\storedSearchResponse.json");
+        var responseContent = await r.ReadToEndAsync();
         
         var searchContent = JsonParseHelper.ObjectFromJsonPropertyName<List<AliexpressSearchResult>>(
             responseContent, "result.resultList");
@@ -47,20 +47,20 @@ public class AliexpressProductsService : IAliexpressProductsService
     
     public async Task<ProductDetailResponse> ProductDetailAsync(string productId, string? region)
     {
-        var parameters = new Dictionary<string, string>
-        {
-            ["itemId"] = productId
-        };
-        if(region != null)
-            parameters.Add("region", region);
-
-        var uri = QueryHelpers.AddQueryString("item_detail", parameters);
-        var response = await _httpClient.GetAsync(uri);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        // var parameters = new Dictionary<string, string>
+        // {
+        //     ["itemId"] = productId
+        // };
+        // if(region != null)
+        //     parameters.Add("region", region);
+        //
+        // var uri = QueryHelpers.AddQueryString("item_detail", parameters);
+        // var response = await _httpClient.GetAsync(uri);
+        // response.EnsureSuccessStatusCode();
+        // var responseContent = await response.Content.ReadAsStringAsync();
         
-        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDetailResponse.json");
-        // var responseContent = await r.ReadToEndAsync();
+        var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDetailResponse.json");
+        var responseContent = await r.ReadToEndAsync();
         
         var productDetail = JsonParseHelper.ObjectFromJsonPropertyName<AliexpressProductDetailResult>(
             responseContent, "result.item");
@@ -71,18 +71,18 @@ public class AliexpressProductsService : IAliexpressProductsService
     
     private async Task<DescriptionResponse> ProductDescriptionAsync(string productId)
     {
-        var parameters = new Dictionary<string, string>
-        {
-            ["itemId"] = productId
-        };
-
-        var uri = QueryHelpers.AddQueryString("item_desc", parameters);
-        var response = await _httpClient.GetAsync(uri);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        // var parameters = new Dictionary<string, string>
+        // {
+        //     ["itemId"] = productId
+        // };
+        //
+        // var uri = QueryHelpers.AddQueryString("item_desc", parameters);
+        // var response = await _httpClient.GetAsync(uri);
+        // response.EnsureSuccessStatusCode();
+        // var responseContent = await response.Content.ReadAsStringAsync();
         
-        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDescriptionResponse.json");
-        // var responseContent = await r.ReadToEndAsync();
+        var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedProductDescriptionResponse.json");
+        var responseContent = await r.ReadToEndAsync();
         
         var productDescription = JsonParseHelper.ObjectFromJsonPropertyName<AliexpressProductDescriptionResult>(
             responseContent, "result.item");
@@ -133,24 +133,24 @@ public class AliexpressProductsService : IAliexpressProductsService
 
     public async Task<IEnumerable<ProductSearchResponse>> SearchByImage(string imgUrl, string? sort, string? categoryId, string? region)
     {
-        var parameters = new Dictionary<string, string>
-        {
-            ["imgUrl"] = imgUrl
-        };
-        if(sort != null)
-            parameters.Add("sort", sort);
-        if(categoryId != null)
-            parameters.Add("categoryId", categoryId);
-        if(region != null)
-            parameters.Add("region", region);
-
-        var uri = QueryHelpers.AddQueryString("item_search_image", parameters);
-        var response = await _httpClient.GetAsync(uri);
-        response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
+        // var parameters = new Dictionary<string, string>
+        // {
+        //     ["imgUrl"] = imgUrl
+        // };
+        // if(sort != null)
+        //     parameters.Add("sort", sort);
+        // if(categoryId != null)
+        //     parameters.Add("categoryId", categoryId);
+        // if(region != null)
+        //     parameters.Add("region", region);
+        //
+        // var uri = QueryHelpers.AddQueryString("item_search_image", parameters);
+        // var response = await _httpClient.GetAsync(uri);
+        // response.EnsureSuccessStatusCode();
+        // var responseContent = await response.Content.ReadAsStringAsync();
         
-        // var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedSearchByImageResponse.json");
-        // var responseContent = await r.ReadToEndAsync();
+        var r = new StreamReader("StoredJsonAPIResponses/Aliexpress/storedSearchByImageResponse.json");
+        var responseContent = await r.ReadToEndAsync();
         
         var searchContent = JsonParseHelper.ObjectFromJsonPropertyName<List<AliexpressSearchResult>>(
             responseContent, "result.resultList");
