@@ -9,9 +9,9 @@ public class ProductPricesRepository : GenericRepository<ProductPrices>, IProduc
 {
     private readonly DbSet<ProductPrices> _producPrices;
     
-    public ProductPricesRepository(ProductsDbContext dbContext, DbSet<ProductPrices> producPrices) : base(dbContext)
+    public ProductPricesRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _producPrices = producPrices;
+        _producPrices = dbContext.Set<ProductPrices>();
     }
 
     public async Task<IList<ProductPrices>> getAllPricesOfProduct(int productId)

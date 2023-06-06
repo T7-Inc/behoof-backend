@@ -9,9 +9,9 @@ public class ProductOffersRepository : GenericRepository<ProductOffers>, IProduc
 {
     private readonly DbSet<ProductOffers> _productOffers;
     
-    public ProductOffersRepository(ProductsDbContext dbContext, DbSet<ProductOffers> productOffers) : base(dbContext)
+    public ProductOffersRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _productOffers = productOffers;
+        _productOffers = dbContext.Set<ProductOffers>();
     }
 
     public async Task<IEnumerable<ProductOffers>> GetAllOffersOfProduct(int productId)

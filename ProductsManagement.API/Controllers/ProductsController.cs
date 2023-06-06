@@ -82,4 +82,53 @@ public class ProductsController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
         }
     }
+    
+    [HttpGet("GetFavoriteList")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<LikedProductResponse>>> GetFavoriteList(string userId)
+    {
+        try
+        {
+            var results = await _productsService.GetUserFavoriteProducts(userId);
+            return Ok(results);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        }
+    }
+    
+    [HttpPost("AddProductToFavoriteList")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AddProductToFavoriteList(LikedProductRequest request)
+    {
+        try
+        {
+            await _productsService.AddProductToFavorites(request);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        }
+    }
+    
+    [HttpDelete("DeleteProductFromFavoriteList")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteProductFromFavoriteList(int likedProductId)
+    {
+        try
+        {
+            await _productsService.DeleteProductFromFavorites(likedProductId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        }
+    }
+    
 }

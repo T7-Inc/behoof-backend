@@ -9,8 +9,8 @@ public class RuleSetRepository : GenericRepository<RuleSet>, IRuleSetRepository
 {
     private readonly DbSet<ProductOffers> _ruleSets;
     
-    public RuleSetRepository(ProductsDbContext dbContext, DbSet<ProductOffers> ruleSets) : base(dbContext)
+    public RuleSetRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _ruleSets = ruleSets;
+        _ruleSets = dbContext.Set<ProductOffers>();;
     }
 }

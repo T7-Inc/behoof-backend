@@ -9,9 +9,9 @@ public class UserLikedProductsRepository : GenericRepository<UserLikedProducts>,
 {
     private readonly DbSet<UserLikedProducts> _userLikedProducts;
     
-    public UserLikedProductsRepository(ProductsDbContext dbContext, DbSet<UserLikedProducts> userLikedProducts) : base(dbContext)
+    public UserLikedProductsRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _userLikedProducts = userLikedProducts;
+        _userLikedProducts = dbContext.Set<UserLikedProducts>();
     }
     
     public async Task<IEnumerable<UserLikedProducts>> GetUserLikedProducts(string userId)

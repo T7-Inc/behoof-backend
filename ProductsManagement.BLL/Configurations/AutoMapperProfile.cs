@@ -1,4 +1,3 @@
-using System.Globalization;
 using AutoMapper;
 using ProductsManagement.BLL.DTO.Responses;
 using ProductsManagement.BLL.Enums;
@@ -87,20 +86,22 @@ public class AutoMapperProfile : Profile
     private void CreateAmazonMaps()
     {
         CreateMap<AmazonSearchResult, ProductSearchResponse>()
-            .ForMember(dest => dest.MarketplaceIndex,
-                opt => opt.MapFrom(_ => MarketplacesEnum.Amazon))
-            .ForMember(dest => dest.ImageUrl,
-                opt => 
-                    opt.MapFrom(src => 
-                        src.Images.FirstOrDefault() != null ? src.Images.FirstOrDefault()!.Image : ""))
-            .ForMember(dest => dest.Title,
-                opt => opt.MapFrom(src => src.Title))
-            .ForMember(dest => dest.PriceUSD,
-                opt => opt.MapFrom(src => ConvertToFloat(src.Price.Amount)))
-            .ForMember(dest => dest.ProductId,
-                opt => opt.MapFrom(src => src.Asin))
-            .ForMember(dest => dest.Url,
-                opt => opt.Ignore());
+            .ForMember(response => response.MarketplaceIndex,
+                options =>
+                    options.MapFrom(_ => MarketplacesEnum.Amazon))
+            .ForMember(response => response.ProductId,
+                options =>
+                    options.MapFrom(result => result.Asin))
+            .ForMember(response => response.ImageUrl,
+                options =>
+                    options.MapFrom(result =>
+                        result.Images.FirstOrDefault() != null ? result.Images.FirstOrDefault()!.Image : ""))
+            .ForMember(response => response.Title,
+                options =>
+                    options.MapFrom(result => result.Title))
+            .ForMember(response => response.PriceUSD,
+                options =>
+                    options.MapFrom(result => result.Price.Amount));
 
         CreateMap<AmazonProductDetailResult, ProductDetailResponse>()
             .ForMember(response => response.ProductId,
@@ -116,7 +117,7 @@ public class AutoMapperProfile : Profile
         CreateMap<AmazonProductDetailForOfferResult, ProductDetailForOfferResponse>()
             .ForMember(response => response.ProductPrice,
                 options =>
-                    options.MapFrom(result => ConvertToFloat(result.Price.Amount)))
+                    options.MapFrom(result => result.Price.Amount))
             .ForMember(response => response.SellerRating,
                 options =>
                     options.MapFrom(result => result.Reviews.AvgRating))
@@ -137,15 +138,5 @@ public class AutoMapperProfile : Profile
             .ForMember(response => response.SellerUrl,
                 options =>
                     options.MapFrom(result => result.Link));
-    }
-    
-    private static float ConvertToFloat(string amount)
-    {
-        if (float.TryParse(amount, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-        {
-            return result;
-        }
-
-        return 0.0f;
     }
 }

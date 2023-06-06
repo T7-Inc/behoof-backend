@@ -5,6 +5,9 @@ using ProductsManagement.BLL.Configurations;
 using ProductsManagement.BLL.Services.Abstract;
 using ProductsManagement.BLL.Services.Concrete;
 using ProductsManagement.DAL.Data;
+using ProductsManagement.DAL.Interfaces;
+using ProductsManagement.DAL.Repositories;
+using ProductsManagement.DAL.Repositories.UnitOfWork;
 
 namespace ProductsManagement.API.Extensions;
 
@@ -45,9 +48,19 @@ public static class WebApplicationBuilderExtensions
         {
             client.BaseAddress = new Uri(builder.Configuration["ThirdPartyAPIs:GoogleAPI:Url"]);
         });
-
-        builder.Services.AddTransient<IProductsService, ProductsService>();
         
+        builder.Services.AddTransient<IUserLikedProductsRepository, UserLikedProductsRepository>();
+        builder.Services.AddTransient<IProductOffersRepository, ProductOffersRepository>();
+        builder.Services.AddTransient<IProductPhotosRepository, ProductPhotosRepository>();
+        builder.Services.AddTransient<IProductPricesRepository, ProductPricesRepository>();
+        builder.Services.AddTransient<IProductReviewsRepository, ProductReviewsRepository>();
+        builder.Services.AddTransient<IRuleSetRepository, RuleSetRepository>();
+        builder.Services.AddTransient<ITrackedProductsRepository, TrackedProductsRepository>();
+        builder.Services.AddTransient<IUserTrackedProductsRepository, UserTrackedProductsRepository>();
+        
+        builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddTransient<IProductsService, ProductsService>();
+
         builder.Services.AddAuthorization();
 
         builder.Services.AddControllers()

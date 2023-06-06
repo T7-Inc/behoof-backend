@@ -9,9 +9,9 @@ public class ProductPhotosRepository : GenericRepository<ProductPhotos>, IProduc
 {
     private readonly DbSet<ProductPhotos> _productPhotos;
     
-    public ProductPhotosRepository(ProductsDbContext dbContext, DbSet<ProductPhotos> productPhotos) : base(dbContext)
+    public ProductPhotosRepository(ProductsDbContext dbContext) : base(dbContext)
     {
-        _productPhotos = productPhotos;
+        _productPhotos = dbContext.Set<ProductPhotos>();
     }
 
     public async Task<IEnumerable<ProductPhotos>> GetPhotosOfProduct(int productId)

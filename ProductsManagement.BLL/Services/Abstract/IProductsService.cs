@@ -10,4 +10,8 @@ public interface IProductsService
     Task<ProductDetailResponse> GetProductDetail(string productId, int marketplaceId);
     
     Task<IEnumerable<ProductOfferResponse>> GetProductOffers(ProductOffersRequest request);
+
+    Task<IEnumerable<LikedProductResponse>> GetUserFavoriteProducts(string userId);
+    Task AddProductToFavorites(LikedProductRequest request);
+    Task DeleteProductFromFavorites(int likedProductId);
 }
