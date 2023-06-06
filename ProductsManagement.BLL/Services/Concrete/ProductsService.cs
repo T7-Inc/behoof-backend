@@ -3,6 +3,7 @@ using AutoMapper;
 using ProductsManagement.BLL.DTO.Requests;
 using ProductsManagement.BLL.DTO.Responses;
 using ProductsManagement.BLL.Enums;
+using ProductsManagement.BLL.Helpers;
 using ProductsManagement.BLL.Services.Abstract;
 using ProductsManagement.DAL.Entities;
 using ProductsManagement.DAL.Interfaces;
@@ -115,13 +116,13 @@ public class ProductsService : IProductsService
             // }
             // else
             // {
-            var priceWitCurrMatch = Regex.Match(response.Price!.Value, @"(\D*)(\d+\.\d{2})");
+            var priceWitCurrMatch = Regex.Match(response.Price!.Value, @"(\D*)(\d+[\.,]\d{2})");
             if (!priceWitCurrMatch.Success || priceWitCurrMatch.Groups.Count != 3)
                 continue;
             var currency = priceWitCurrMatch.Groups[1].Value;
             if (!currency.Contains('$'))
                 continue;
-            var price = float.Parse(priceWitCurrMatch.Groups[2].Value);
+            var price = FloatHelpers.ConvertToFloat(priceWitCurrMatch.Groups[2].Value);
 
             offer = new ProductOfferResponse
             {

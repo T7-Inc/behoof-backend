@@ -120,9 +120,9 @@ public class AliexpressProductsService : IAliexpressProductsService
         float? priceUsd = null;
         if (!string.IsNullOrEmpty(priceUsdStr))
         {
-            var match = Regex.Match(priceUsdStr, @"^(\d+\.\d{2})");
+            var match = Regex.Match(priceUsdStr, @"^(\d+[\.,]\d{2})");
             if (match.Success)
-                priceUsd = float.Parse(match.Value);
+                priceUsd = FloatHelpers.ConvertToFloatNullable(match.Value);
         }
 
         var result = 

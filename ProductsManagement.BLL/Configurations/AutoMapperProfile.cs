@@ -2,6 +2,7 @@ using System.Globalization;
 using AutoMapper;
 using ProductsManagement.BLL.DTO.Responses;
 using ProductsManagement.BLL.Enums;
+using ProductsManagement.BLL.Helpers;
 using ProductsManagement.BLL.ThirdPartyAPIsDTO.Aliexpress.Responses;
 using ProductsManagement.BLL.ThirdPartyAPIsDTO.Amazon.Responses;
 using ProductsManagement.BLL.ThirdPartyAPIsDTO.Google.Responses;
@@ -75,10 +76,10 @@ public class AutoMapperProfile : Profile
                     options.MapFrom(result => result.Delivery.ShippingFrom))
             .ForMember(response => response.ShippingPrice,
                 options =>
-                    options.MapFrom(result => ConvertToFloatNullable(result.Delivery.ShippingList.First().ShippingFee)))
+                    options.MapFrom(result => FloatHelpers.ConvertToFloatNullable(result.Delivery.ShippingList.First().ShippingFee)))
             .ForMember(response => response.SellerRating,
                 options =>
-                    options.MapFrom(result => ConvertToFloatNullable(result.Seller.StoreRating)))
+                    options.MapFrom(result => FloatHelpers.ConvertToFloatNullable(result.Seller.StoreRating)))
             .ForMember(response => response.Available,
                 options =>
                     options.MapFrom(result => result.Item.Sku.Def.Quantity > 0));
@@ -96,7 +97,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Title,
                 opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.PriceUSD,
-                opt => opt.MapFrom(src => ConvertToFloat(src.Price.Amount)))
+                opt => opt.MapFrom(src => FloatHelpers.ConvertToFloat(src.Price.Amount)))
             .ForMember(dest => dest.ProductId,
                 opt => opt.MapFrom(src => src.Asin))
             .ForMember(dest => dest.Url,
@@ -116,7 +117,7 @@ public class AutoMapperProfile : Profile
         CreateMap<AmazonProductDetailForOfferResult, ProductDetailForOfferResponse>()
             .ForMember(response => response.ProductPrice,
                 options =>
-                    options.MapFrom(result => ConvertToFloatNullable(result.Price.Amount)))
+                    options.MapFrom(result => FloatHelpers.ConvertToFloatNullable(result.Price.Amount)))
             .ForMember(response => response.SellerRating,
                 options =>
                     options.MapFrom(result => result.Reviews.AvgRating))
@@ -137,25 +138,5 @@ public class AutoMapperProfile : Profile
             .ForMember(response => response.SellerUrl,
                 options =>
                     options.MapFrom(result => result.Link));
-    }
-    
-    private static float ConvertToFloat(string amount)
-    {
-        if (float.TryParse(amount, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-        {
-            return result;
-        }
-
-        return 0.0f;
-    }
-
-    private static float? ConvertToFloatNullable(string amount)
-    {
-        if (float.TryParse(amount, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-        {
-            return result;
-        }
-
-        return null;
     }
 }
