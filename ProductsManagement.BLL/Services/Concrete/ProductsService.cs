@@ -11,8 +11,8 @@ namespace ProductsManagement.BLL.Services.Concrete;
 
 public class ProductsService : IProductsService
 {
-    private static readonly TimeSpan RequestFrequencyDelay = TimeSpan.FromSeconds(2);
-    
+    private const int RequestFrequencyDelayMillis = 2000;
+
     private readonly IMapper _mapper;
     private readonly IAliexpressProductsService _aliexpressService;
     private readonly IAmazonProductsService _amazonService;
@@ -71,15 +71,7 @@ public class ProductsService : IProductsService
         var requestStartTime = DateTime.MinValue;
         foreach (var response in aliResponses)
         {
-            var requestElapsedTime = DateTime.UtcNow - requestStartTime;
-            var remainingDelay = RequestFrequencyDelay - requestElapsedTime;
-
-            // Delay for the remaining time (if any)
-            if (remainingDelay > TimeSpan.Zero)
-            {
-                Thread.Sleep(remainingDelay);
-            }
-            requestStartTime = DateTime.UtcNow;
+            Thread.Sleep(RequestFrequencyDelayMillis);
             
             var detail = await _aliexpressService.ProductDetailForOfferAsync(response.ProductId, request.Region, i);
             var offer = _mapper.Map<ProductDetailForOfferResponse, ProductOfferResponse>(detail);
