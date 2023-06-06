@@ -21,22 +21,22 @@ public class AmazonProductsService : IAmazonProductsService
     
     public async Task<IEnumerable<ProductSearchResponse>> SearchAsync(string query, int page, string? region)
     {
-        // var parameters = new Dictionary<string, string>()
-        // {
-        //     ["keywords"] = query,
-        //     ["page"] = page.ToString(),
-        // };
-        //
-        // if(region != null)
-        //     parameters.Add("region", region);
-        //
-        // var uri = QueryHelpers.AddQueryString("search/", parameters);
-        // var response = await _httpClient.GetAsync(uri);
-        // response.EnsureSuccessStatusCode();
-        // var responseContent = await response.Content.ReadAsStringAsync();
-        //
-        var r = new StreamReader("StoredJsonAPIResponses/Amazon/storedSearchResponse.json");
-        var responseContent = await r.ReadToEndAsync();
+        var parameters = new Dictionary<string, string>()
+        {
+            ["keywords"] = query,
+            ["page"] = page.ToString(),
+        };
+        
+        if(region != null)
+            parameters.Add("region", region);
+        
+        var uri = QueryHelpers.AddQueryString("search/", parameters);
+        var response = await _httpClient.GetAsync(uri);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        
+        // var r = new StreamReader("StoredJsonAPIResponses/Amazon/storedSearchResponse.json");
+        // var responseContent = await r.ReadToEndAsync();
         
         var searchContent = JsonParseHelper.ObjectFromJsonPropertyName<List<AmazonSearchResult>>(
             responseContent, "results");
@@ -47,20 +47,20 @@ public class AmazonProductsService : IAmazonProductsService
 
     public async Task<ProductDetailResponse> ProductDetailAsync(string productId, string? region)
     {
-        // var parameters = new Dictionary<string, string>
-        // {
-        //     ["asin"] = productId,
-        // };
-        // if (region != null)
-        //     parameters.Add("region", region);
-        //
-        // var uri = QueryHelpers.AddQueryString("product/", parameters);
-        // var response = await _httpClient.GetAsync(uri);
-        // response.EnsureSuccessStatusCode();
-        // var responseContent = await response.Content.ReadAsStringAsync();
+        var parameters = new Dictionary<string, string>
+        {
+            ["asin"] = productId,
+        };
+        if (region != null)
+            parameters.Add("region", region);
+        
+        var uri = QueryHelpers.AddQueryString("product/", parameters);
+        var response = await _httpClient.GetAsync(uri);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
 
-        var r = new StreamReader("StoredJsonAPIResponses/Amazon/storedProductDetailResponse.json");
-        var responseContent = await r.ReadToEndAsync();
+        // var r = new StreamReader("StoredJsonAPIResponses/Amazon/storedProductDetailResponse.json");
+        // var responseContent = await r.ReadToEndAsync();
 
         var productDetail = JsonConvert.DeserializeObject<AmazonProductDetailResult>(responseContent);
         if (productDetail == null)
@@ -100,20 +100,20 @@ public class AmazonProductsService : IAmazonProductsService
 
     public async Task<ProductDetailForOfferResponse> ProductDetailForOfferAsync(string productId, string? region, int? n)
     {
-        // var parameters = new Dictionary<string, string>
-        // {
-        //     ["asin"] = productId,
-        // };
-        // if (region != null)
-        //     parameters.Add("region", region);
-        //
-        // var uri = QueryHelpers.AddQueryString("product/", parameters);
-        // var response = await _httpClient.GetAsync(uri);
-        // response.EnsureSuccessStatusCode();
-        // var responseContent = await response.Content.ReadAsStringAsync();
+        var parameters = new Dictionary<string, string>
+        {
+            ["asin"] = productId,
+        };
+        if (region != null)
+            parameters.Add("region", region);
         
-        var r = new StreamReader("StoredJsonAPIResponses/Amazon/storedProductDetailForOfferResponse.json");
-        var responseContent = await r.ReadToEndAsync();
+        var uri = QueryHelpers.AddQueryString("product/", parameters);
+        var response = await _httpClient.GetAsync(uri);
+        response.EnsureSuccessStatusCode();
+        var responseContent = await response.Content.ReadAsStringAsync();
+        
+        // var r = new StreamReader("StoredJsonAPIResponses/Amazon/storedProductDetailForOfferResponse.json");
+        // var responseContent = await r.ReadToEndAsync();
         
         var productDetail = JsonConvert.DeserializeObject<AmazonProductDetailForOfferResult>(responseContent);
         if (productDetail == null)
