@@ -14,11 +14,6 @@ public class UserTrackedProductsRepository : GenericRepository<UserTrackedProduc
         _userTrackedProducts = dbContext.Set<UserTrackedProducts>();
     }
     
-    public async Task<IList<UserTrackedProducts>> GetProductsTrackedByUser(string userId)
-    {
-        return await _userTrackedProducts.Where(p => p.UserId == userId).ToListAsync();
-    }
-    
     public async Task<IEnumerable<UserTrackedProducts>> GetInfoAboutProductsTrackedByUser(string userId)
     {
         var trackedProducts = await _userTrackedProducts.Include(u => u.TrackedProduct.ProductOffers)
@@ -27,5 +22,10 @@ public class UserTrackedProductsRepository : GenericRepository<UserTrackedProduc
             .Where(tracked => tracked.UserId == userId).ToListAsync();
 
         return trackedProducts;
+    }
+    
+    public async Task<IList<UserTrackedProducts>> GetProductsTrackedByUser(string userId)
+    {
+        return await _userTrackedProducts.Where(p => p.UserId == userId).ToListAsync();
     }
 }

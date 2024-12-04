@@ -33,39 +33,23 @@ public class ProductsController : ControllerBase
         }
     }
     
-    [HttpGet("GetDetail")]
+    [HttpGet("SearchByImage")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ProductDetailResponse>> GetProductDetail(string productId, int marketplaceId)
+    public async Task<ActionResult<IEnumerable<ProductSearchResponse>>> SearchByImage([FromQuery] string imageUrl)
     {
         try
         {
-            var results = await _productsService.GetProductDetail(productId, marketplaceId);
-            return Ok(results);
+            //var results = await _aliexpressProductsService.SearchByImage(imageUrl, "priceAsc", null, null);
+            //return Ok(results);
+            return Ok();
         }
         catch (Exception e)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
         }
     }
-    
-    // [HttpGet("SearchByImage")]
-    // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    // public async Task<ActionResult<IEnumerable<ProductSearchResponse>>> SearchByImage([FromQuery] string imageUrl)
-    // {
-    //     try
-    //     {
-    //         var results = await _aliexpressProductsService.SearchByImage(imageUrl, "priceAsc", null, null);
-    //         return Ok(results);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
-    //     }
-    // }
     
     [HttpGet("GetOffers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,6 +59,23 @@ public class ProductsController : ControllerBase
         try
         {
             var results = await _productsService.GetProductOffers(request);
+            return Ok(results);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { e.Message });
+        }
+    }
+    
+    [HttpGet("GetDetail")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ProductDetailResponse>> GetProductDetail(string productId, int marketplaceId)
+    {
+        try
+        {
+            var results = await _productsService.GetProductDetail(productId, marketplaceId);
             return Ok(results);
         }
         catch (Exception e)

@@ -9,7 +9,13 @@ public class ProductOffersConfig : IEntityTypeConfiguration<ProductOffers>
     public void Configure(EntityTypeBuilder<ProductOffers> builder)
     {
         builder.ToTable("productoffers");
-
+        
+        builder.HasOne(d => d.Product)
+            .WithMany(p => p.ProductOffers)
+            .HasForeignKey(d => d.ProductId)
+            .HasConstraintName("productoffers_productid_fkey");
+        
+        
         builder.HasKey(e => e.Id);
         
         builder.Property(e => e.Id)
@@ -32,9 +38,5 @@ public class ProductOffersConfig : IEntityTypeConfiguration<ProductOffers>
             .HasMaxLength(50)
             .HasColumnName("shop");
 
-        builder.HasOne(d => d.Product)
-            .WithMany(p => p.ProductOffers)
-            .HasForeignKey(d => d.ProductId)
-            .HasConstraintName("productoffers_productid_fkey");
     }
 }
