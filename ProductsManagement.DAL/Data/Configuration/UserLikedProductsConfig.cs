@@ -9,6 +9,13 @@ public class UserLikedProductsConfig : IEntityTypeConfiguration<UserLikedProduct
     public void Configure(EntityTypeBuilder<UserLikedProducts> builder)
     {
         builder.HasKey(e => e.Id);
+
+        builder.Property(e => e.ProductId).HasColumnName("productid");
+
+        builder.HasOne(d => d.Product)
+            .WithMany(p => p.UserLikedProducts)
+            .HasForeignKey(d => d.ProductId)
+            .HasConstraintName("userlikedproducts_productid_fkey");
         
         builder.Property(e => e.Id)
             .UseIdentityColumn()
@@ -19,12 +26,5 @@ public class UserLikedProductsConfig : IEntityTypeConfiguration<UserLikedProduct
         builder.Property(e => e.UserId)
             .HasMaxLength(255)
             .HasColumnName("userid");
-
-        builder.Property(e => e.ProductId).HasColumnName("productid");
-
-        builder.HasOne(d => d.Product)
-            .WithMany(p => p.UserLikedProducts)
-            .HasForeignKey(d => d.ProductId)
-            .HasConstraintName("userlikedproducts_productid_fkey");
     }
 }

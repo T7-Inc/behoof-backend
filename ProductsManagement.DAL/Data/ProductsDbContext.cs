@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using ProductsManagement.DAL.Data.Configuration;
+﻿using ProductsManagement.DAL.Data.Configuration;
 using ProductsManagement.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ProductsManagement.DAL.Data;
 
 public class ProductsDbContext : DbContext
-{
+
+    
+{ 
     public virtual DbSet<ProductOffers> Productoffers { get; set; } = null!;
     public virtual DbSet<ProductPhotos> Productphotos { get; set; } = null!;
     public virtual DbSet<ProductPrices> Productprices { get; set; } = null!;
@@ -22,14 +24,6 @@ public class ProductsDbContext : DbContext
     {
         _configuration = configuration;
     }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        { 
-            optionsBuilder.UseNpgsql(_configuration["ConnectionStrings:DataBaseConnection"]);
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,5 +36,13 @@ public class ProductsDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TrackedProductsConfig());
         modelBuilder.ApplyConfiguration(new UserLikedProductsConfig());
         modelBuilder.ApplyConfiguration(new UserTrackedProductsConfig());
+    }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        { 
+            optionsBuilder.UseNpgsql(_configuration["ConnectionStrings:DataBaseConnection"]);
+        }
     }
 }
